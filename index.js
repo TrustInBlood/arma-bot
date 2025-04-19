@@ -208,10 +208,22 @@ async function countArmaPlayers() {
 // Update the bot's status with the number of players in the server
 async function updateStatus() {
   try {
+    // Create a new promise for waiting for the webhook update
+    playerListUpdatePromise = new Promise(resolve => {
+      playerListUpdateResolve = resolve;
+    });
+    
+    // First force an update of the player list via RCON
+    await executeRconCommand('playerlist');
+    
+    // Wait for the webhook to update latestPlayerList
+    await playerListUpdatePromise;
+    
     const playerCount = latestPlayerList ? latestPlayerList.length : 0;
     const maxPlayers = 128; // You can adjust this based on your server's max capacity
     
     client.user.setActivity(`${playerCount}/${maxPlayers} players`, { type: 'WATCHING' });
+    console.log(`Status updated: ${playerCount}/${maxPlayers} players`);
   } catch (error) {
     console.error('Error updating status:', error);
   }
