@@ -994,10 +994,50 @@ client.on('messageCreate', async message => {
       const playerCount = latestPlayerList ? latestPlayerList.length : 0;
       const maxPlayers = 128; // Matching your screenshot's max players
       
+      // Count players per faction
+      let natoCount = 0;
+      let csatCount = 0;
+      let aafCount = 0;
+      let civCount = 0;
+      
+      if (latestPlayerList) {
+        latestPlayerList.forEach(player => {
+          switch (player.factionIndex) {
+            case 0:
+              natoCount++;
+              break;
+            case 1:
+              csatCount++;
+              break;
+            case 2:
+              aafCount++;
+              break;
+            case 3:
+              civCount++;
+              break;
+          }
+        });
+      }
+      
       // Create an embed for better formatting
       const statusEmbed = {
         color: 0x00ff00, // Green color
-        description: `${currentServer.name}\n\nPlayers\n${playerCount}/${maxPlayers}\n\nPowered by B&B Arma Bot • ${new Date().toLocaleTimeString()}`,
+        title: `${currentServer.name}`,
+        fields: [
+          {
+            name: 'Players',
+            value: `${playerCount}/${maxPlayers}`,
+            inline: true
+          },
+          {
+            name: 'Teams',
+            value: `:small_blue_diamond: NATO: ${natoCount}\n:small_red_triangle_down: CSAT: ${csatCount}\n:small_orange_diamond: AAF: ${aafCount}\n:white_small_square: Civilians: ${civCount}`,
+            inline: true
+          }
+        ],
+        footer: {
+          text: `Powered by B&B Arma Bot • ${new Date().toLocaleTimeString()}`
+        }
       };
       
       await message.channel.send({ embeds: [statusEmbed] });
