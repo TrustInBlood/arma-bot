@@ -222,7 +222,15 @@ async function updateStatus() {
     const playerCount = latestPlayerList ? latestPlayerList.length : 0;
     const maxPlayers = 128; // You can adjust this based on your server's max capacity
     
-    client.user.setActivity(`${playerCount}/${maxPlayers} players`, { type: 'WATCHING' });
+    // Set both presence and activity
+    await client.user.setPresence({
+      activities: [{ 
+        name: `${playerCount}/${maxPlayers} players`,
+        type: 3 // WATCHING
+      }],
+      status: 'online'
+    });
+    
     console.log(`Status updated: ${playerCount}/${maxPlayers} players`);
   } catch (error) {
     console.error('Error updating status:', error);
@@ -505,18 +513,17 @@ client.once('ready', async () => {
     console.error('Error refreshing application commands:', error);
   }
 
+  // Set initial status
+  await updateStatus();
+  
   // Start the status update loop
-  (async function updateLoop() {
-    while (true) {
-      try {
-        await updateStatus();
-        await new Promise(resolve => setTimeout(resolve, 120000)); // 2 minutes
-      } catch (error) {
-        console.error('Error in update loop:', error);
-        await new Promise(resolve => setTimeout(resolve, 120000)); // 2 minutes
-      }
+  setInterval(async () => {
+    try {
+      await updateStatus();
+    } catch (error) {
+      console.error('Error in status update:', error);
     }
-  })();
+  }, 120000); // Update every 2 minutes
 });
 
 // Common kick reasons
