@@ -222,7 +222,11 @@ async function updateStatus() {
     const playerCount = latestPlayerList ? latestPlayerList.length : 0;
     const maxPlayers = 128; // You can adjust this based on your server's max capacity
     
-    await client.user.setActivity(`${playerCount}/${maxPlayers} players`);
+    await client.user.setActivity({
+      type: 4, // ActivityType.Custom
+      name: `${playerCount}/${maxPlayers} players`,
+      state: `${playerCount}/${maxPlayers} players`
+    });
     
     console.log(`Status updated: ${playerCount}/${maxPlayers} players`);
   } catch (error) {
