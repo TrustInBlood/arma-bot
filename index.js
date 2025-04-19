@@ -4,6 +4,8 @@ const axios = require('axios');
 const dgram = require('dgram');
 const crc32 = require('buffer-crc32');
 const fs = require('fs');
+const factions = require('./config/factions');
+const { handleStatusCommand } = require('./src/commands/message/status');
 require('dotenv').config();
 
 // Load environment variables
@@ -125,25 +127,7 @@ app.post('/webhook', async (req, res) => {
         }
 
         // Add faction symbol if factionIndex exists
-        let factionSymbol = '';
-        if (factionIndex !== undefined) {
-          switch (factionIndex) {
-            case 0:
-              factionSymbol = ':small_blue_diamond:';  // NATO/Blue
-              break;
-            case 1:
-              factionSymbol = ':small_red_triangle_down:';  // CSAT/Red
-              break;
-            case 2:
-              factionSymbol = ':small_orange_diamond:';  // AAF/Orange
-              break;
-            case 3:
-              factionSymbol = ':white_small_square:';  // Civilians
-              break;
-            default:
-              factionSymbol = ':grey_question:';  // Unknown faction/Catch all
-          }
-        }
+        let factionSymbol = factions.factions[factionIndex] || ':grey_question:';
 
         message = `${channelIndicator} ${factionSymbol} ${playerName}: ${chatMessage}`;
         break;
@@ -1004,23 +988,7 @@ client.on('interactionCreate', async interaction => {
 // Add message event handler for !status6
 client.on('messageCreate', async message => {
   if (message.content.toLowerCase() === '!status6') {
-    try {
-      // Get current server info
-      const currentServer = getCurrentServer();
-      const playerCount = latestPlayerList ? latestPlayerList.length : 0;
-      const maxPlayers = 128; // Matching your screenshot's max players
-      
-      // Create an embed for better formatting
-      const statusEmbed = {
-        color: 0x00ff00, // Green color
-        description: `${currentServer.name}\n\nPlayers\n${playerCount}/${maxPlayers}\n\nPowered by B&B Arma Bot • ${new Date().toLocaleTimeString()}`,
-      };
-      
-      await message.channel.send({ embeds: [statusEmbed] });
-    } catch (error) {
-      console.error('Error in status command:', error);
-      await message.channel.send('Error fetching server status.');
-    }
+    await handleStatusCommand(message, latestPlayerList);
   }
 });
 

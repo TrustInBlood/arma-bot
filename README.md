@@ -2,6 +2,29 @@
 
 A Discord bot designed to complement the [TrustyAdminTools](https://reforger.armaplatform.com/workshop/65064E8034130626-TrustyAdminTools) mod for Arma Reforger servers. This bot receives and processes webhook events from your Arma Reforger server, providing real-time monitoring and administration capabilities in your Discord server.
 
+## Project Structure
+
+```
+arma-bot/
+├── src/
+│   ├── commands/           # Discord commands
+│   │   ├── admin/         # Admin-related commands
+│   │   ├── server/        # Server management commands
+│   │   └── message/       # Message-based commands
+│   ├── services/          # Core services
+│   ├── utils/             # Utility functions
+│   └── constants/         # Constants and enums
+├── config/                # Configuration files
+│   ├── servers/           # Server configurations
+│   │   ├── servers.json
+│   │   └── servers.json.example
+│   └── factions.js        # Faction definitions
+├── .env                   # Environment variables
+├── .env.example           # Example environment variables
+├── package.json           # Project dependencies
+└── README.md              # Project documentation
+```
+
 ## Features
 
 - Discord bot integration with TrustyAdminTools
@@ -53,9 +76,9 @@ GUILD_ID=your_guild_id_here
 
 5. Configure your servers:
 ```bash
-cp servers.json.example servers.json
+cp config/servers/servers.json.example config/servers/servers.json
 ```
-Edit `servers.json` to add your Arma Reforger servers with their RCON details.
+Edit `config/servers/servers.json` to add your Arma Reforger servers with their RCON details.
 
 ## Configuration
 
@@ -96,8 +119,9 @@ The `servers.json` file contains configuration for multiple Arma Reforger server
 
 ## Discord Commands
 
-The bot provides several slash commands for server administration:
+The bot provides several types of commands:
 
+### Slash Commands
 - `/chatglobal [message]` - Send a global message to the server
 - `/playerlist` - Get the current list of players on the server
 - `/banlist` - Get the current list of banned players
@@ -108,6 +132,9 @@ The bot provides several slash commands for server administration:
 - `/reloadconfigs` - Reload server configurations
 - `/server list` - List all available servers
 - `/server switch [server]` - Switch to a different server
+
+### Message Commands
+- `!status6` - Display current server status and player count
 
 ## Usage
 
