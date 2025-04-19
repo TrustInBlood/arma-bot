@@ -222,14 +222,7 @@ async function updateStatus() {
     const playerCount = latestPlayerList ? latestPlayerList.length : 0;
     const maxPlayers = 128; // You can adjust this based on your server's max capacity
     
-    // Set both presence and activity
-    await client.user.setPresence({
-      activities: [{ 
-        name: `${playerCount}/${maxPlayers} players`,
-        type: 3 // WATCHING
-      }],
-      status: 'online'
-    });
+    await client.user.setActivity(`${playerCount}/${maxPlayers} players`);
     
     console.log(`Status updated: ${playerCount}/${maxPlayers} players`);
   } catch (error) {
