@@ -74,11 +74,16 @@ CHAT_CHANNEL_ID=your_chat_channel_id_here
 GUILD_ID=your_guild_id_here
 ```
 
-5. Configure your servers:
+5. Create the necessary directories and configure your servers:
 ```bash
+# Create the config directory structure
+mkdir -p config/servers
+
+# Copy the example server configuration
 cp config/servers/servers.json.example config/servers/servers.json
 ```
-Edit `config/servers/servers.json` to add your Arma Reforger servers with their RCON details.
+
+6. Edit `config/servers/servers.json` to add your Arma Reforger servers with their RCON details.
 
 ## Configuration
 
