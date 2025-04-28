@@ -1,0 +1,17 @@
+{
+  "currentServer": "server1",
+  "servers": {
+    "server1": {
+      "name": "Example Server 1",
+      "address": "127.0.0.1",
+      "port": 2302,
+      "password": "example_password"
+    },
+    "server2": {
+      "name": "Example Server 2",
+      "address": "192.168.1.100",
+      "port": 2303,
+      "password": "another_example_password"
+    }
+  }
+} 
