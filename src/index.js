@@ -439,6 +439,30 @@ async function executeRconCommand(command) {
   }
 }
 
+// Function to handle server switching
+async function switchServer(serverId) {
+  if (!serverConfig.servers[serverId]) {
+    throw new Error('Server not found!');
+  }
+
+  // Update server configuration
+  serverConfig.currentServer = serverId;
+  saveServerConfig();
+
+  // Update RCON configuration
+  RCON_CONFIG.host = getCurrentServer().address;
+  RCON_CONFIG.port = getCurrentServer().port;
+  RCON_CONFIG.password = getCurrentServer().password;
+
+  // Clear cached data
+  latestPlayerList = [];
+  latestBanList = [];
+  latestGameStatus = null;
+
+  // Force an immediate status update
+  await updateStatus();
+}
+
 // When the bot is ready
 client.once('ready', async () => {
   console.log('Bot is online!');
@@ -788,16 +812,12 @@ client.on('interactionCreate', async interaction => {
 
       case 'switch':
         const serverId = options.getString('server');
-        if (serverConfig.servers[serverId]) {
-          serverConfig.currentServer = serverId;
-          saveServerConfig();
-          // Update RCON_CONFIG with new server settings
-          RCON_CONFIG.host = getCurrentServer().address;
-          RCON_CONFIG.port = getCurrentServer().port;
-          RCON_CONFIG.password = getCurrentServer().password;
+        try {
+          await interaction.deferReply();
+          await switchServer(serverId);
           await safeReply(interaction, `Switched to server: ${serverConfig.servers[serverId].name}`);
-        } else {
-          await safeReply(interaction, 'Server not found!');
+        } catch (error) {
+          await safeReply(interaction, `Error switching server: ${error.message}`);
         }
         break;
     }
